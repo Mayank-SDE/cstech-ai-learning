@@ -10,6 +10,11 @@
  8. pgAdmin
  9. GIT 
  10. Tailwind CSS
+ 11. Zod
+ 12. Linux Commands 
+ 13. Docker
+ 14. Browser Frontend Debugging
+ 15. Backend Node.js Debugging
 ## Vite 
 - To start with the vite project 
 ```bash
@@ -254,8 +259,139 @@ function MayankUseStateDemo(){
    }
 ```
 - The information you passed down are called as props.
-### Tic-Tac-Toe Game
-- 
+### Practice - Tic-Tac-Toe Game
+```jsx
+import { useState } from 'react';
+
+function Square({ value, onSquareClick }) {
+  return (
+    <button className="square" onClick={onSquareClick}>
+      {value}
+    </button>
+  );
+}
+
+function Board({ xIsNext, squares, onPlay }) {
+  function handleClick(i) {
+    if (calculateWinner(squares) || squares[i]) {
+      return;
+    }
+    const nextSquares = squares.slice();
+    if (xIsNext) {
+      nextSquares[i] = 'X';
+    } else {
+      nextSquares[i] = 'O';
+    }
+    onPlay(nextSquares);
+  }
+
+  const winner = calculateWinner(squares);
+  let status;
+  if (winner) {
+    status = 'Winner: ' + winner;
+  } else {
+    status = 'Next player: ' + (xIsNext ? 'X' : 'O');
+  }
+
+  return (
+    <>
+      <div className="status">{status}</div>
+      <div className="board-row">
+        <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
+        <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
+        <Square value={squares[2]} onSquareClick={() => handleClick(2)} />
+      </div>
+      <div className="board-row">
+        <Square value={squares[3]} onSquareClick={() => handleClick(3)} />
+        <Square value={squares[4]} onSquareClick={() => handleClick(4)} />
+        <Square value={squares[5]} onSquareClick={() => handleClick(5)} />
+      </div>
+      <div className="board-row">
+        <Square value={squares[6]} onSquareClick={() => handleClick(6)} />
+        <Square value={squares[7]} onSquareClick={() => handleClick(7)} />
+        <Square value={squares[8]} onSquareClick={() => handleClick(8)} />
+      </div>
+    </>
+  );
+}
+
+export default function Game() {
+  const [history, setHistory] = useState([Array(9).fill(null)]);
+  const [currentMove, setCurrentMove] = useState(0);
+  const xIsNext = currentMove % 2 === 0;
+  const currentSquares = history[currentMove];
+
+  function handlePlay(nextSquares) {
+    const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
+    setHistory(nextHistory);
+    setCurrentMove(nextHistory.length - 1);
+  }
+
+  function jumpTo(nextMove) {
+    setCurrentMove(nextMove);
+  }
+
+  const moves = history.map((squares, move) => {
+    let description;
+    if (move > 0) {
+      description = 'Go to move #' + move;
+    } else {
+      description = 'Go to game start';
+    }
+    return (
+      <li key={move}>
+        <button onClick={() => jumpTo(move)}>{description}</button>
+      </li>
+    );
+  });
+
+  return (
+    <div className="game">
+      <div className="game-board">
+        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+      </div>
+      <div className="game-info">
+        <ol>{moves}</ol>
+      </div>
+    </div>
+  );
+}
+
+function calculateWinner(squares) {
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+  for (let i = 0; i < lines.length; i++) {
+    const [a, b, c] = lines[i];
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      return squares[a];
+    }
+  }
+  return null;
+}
+
+```
+### React Developer Tools
+- React DevTools let you check the props and the state of your React components.
+- JavaScript supports closures which means that inner function hav access to the variables and functions defined in the outer functions. For e.g. - handleClick() function has access to the state variable and setState function defined in the outer functional component.
+- While assigning the function as an prop make sure you are not adding the parenthesis instead you are just passing its name and if you want to pass the parameter then you better pass an anonymuous function which internally call the function having parameter as it avoid the infinite loop condition.
+- arr.slice() is an javascript method used for copying the elements of array and creating a new array.
+- When a list is re-rendered, React takes each list item's key and searches the previous list's items for a matching key.
+- If the current list has a key that does not exists before, React creates a component.
+- If the current list does not have a key that existed before then react will destroy the component and state is re-created.
+- If keys is matched in previous exisiting list and new list then the component is moved.
+- key is a special and reserved property in React. When a element is created, React extracts the key property and stores the key directly on the returned element.
+- On the basis of key React descided which component is to be updated.
+- Keys no need to be globally unique but they must be unique among the siblings components.
+
+
 ## React with TypeScript
 ## Tailwind CSS
 ## Prisma + PostgreSQl
