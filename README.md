@@ -1,3 +1,112 @@
+# Project Requirement 
+
+---
+
+## 🔹 Frontend (React + TypeScript + Vite)
+
+### 1. React + TypeScript
+- Functional Components and Hooks
+- Typing props, state, and custom hooks
+- Context API (for global state)
+- Form handling (`react-hook-form`)
+- Error boundaries and `Suspense`
+- Performance optimization (memoization, lazy loading)
+
+### 2. State Management
+- Zustand (lightweight Redux alternative)
+- React Query (`@tanstack/react-query`) — server state caching and API calls
+- Global state patterns: when to use Context, Zustand, or React Query
+
+### 3. Form and Validation
+- `react-hook-form` + `zod` or `yup` for schema-based validation
+- Controlled vs uncontrolled components
+
+### 4. UI Libraries & Styling
+- `@radix-ui/react-*`: Unstyled, accessible UI primitives
+- `lucide-react`: Icon system
+- `tailwindcss` + `clsx` / `classnames` + `tailwind-merge`
+- `shadcn/ui`: Radix + Tailwind-based reusable UI components
+
+### 5. Data Grids & Tables
+- `react-data-grid` or `@tanstack/react-table`
+- Infinite scroll, virtual lists: `react-virtuoso`, `react-infinite-scroll-component`
+
+### 6. Charts
+- `recharts` for visualizations and dashboards
+
+### 7. Other Concepts
+- File uploads: image preview, `html2canvas`, `.xlsx` export/import
+- 3D rendering: `three.js`
+- GIS/Maps: ArcGIS, OpenLayers (`ol`, `proj4`, `ol-geocoder`, `@arcgis/core`)
+- Auth Integration: `react-oidc-context` for OIDC flow
+
+---
+
+## 🔹 Backend (Node.js + Express + Prisma + TypeScript)
+
+### 1. Core Frameworks
+- Express.js fundamentals: middleware, routing, error handling
+- TypeScript with Node.js: interfaces, types, enums, modules
+
+### 2. Database Layer
+- Prisma ORM: schema definition, relationships, migrations
+- SQL Basics (PostgreSQL or MySQL)
+
+### 3. Authentication & Authorization
+- Passport.js (`passport-jwt`, `passport-local`)
+- JWT and session-based auth
+- Keycloak: enterprise SSO integration
+
+### 4. File Uploads
+- `multer` for local uploads
+- MinIO / Azure Blob for object storage
+
+### 5. API Docs
+- Swagger with `swagger-jsdoc`, `swagger-ui-express`
+
+### 6. Queue & Messaging
+- RabbitMQ (`amqplib`) for async jobs & messaging
+
+### 7. Security
+- Password hashing: `argon2`
+- OWASP best practices: validation, sanitization, input protection
+
+---
+
+## 🔹 Shared / Full-stack Concepts
+
+### 1. Validation
+- `zod` for frontend + backend validation
+- DTOs or schemas for strong input typing
+
+### 2. Error Handling
+- Centralized handling with `@hapi/boom`
+- Custom error classes and middleware
+
+### 3. Logging
+- `winston`, `winston-daily-rotate-file`, `winston-azure-blob`
+
+### 4. Monitoring
+- `@sentry/react`, `@sentry/node`, `@sentry/profiling-node` for error tracking
+
+---
+
+## 🔹 DevOps & Build Tools
+
+### 1. Frontend Build Tools
+- Vite: fast dev server and bundler
+- TypeScript compilation with `tsc`
+- Code quality: ESLint + Prettier
+
+### 2. Backend Build Tools
+- `ts-node`, `nodemon` for local development
+- `webpack`, `pkg` for production builds and binary packaging
+
+### 3. Testing
+- Backend: Jest for unit & integration tests
+- Frontend (optional): React Testing Library (RTL), Cypress, Playwright
+
+---
 # Self study
 ### List
  1. Node.js
@@ -417,7 +526,177 @@ function calculateWinner(squares) {
       2. **CSS**
         - Consider what you make class selector for.
         - React components are bit less granular.
-      3. 
+      3. **Design**
+        - Consider how you would organize the design's layers.
+    - If your JSON is well strucutred, it naturally maps to the component structure of your UI.
+    - UI and data models usually have the similar information architecture, the same shape.
+    - Separate your UI into components, where each component matches one piece of your data model.
+  2. **Build a Static version in React**
+    - Build a UI from your data model without any interactivity. Because it is easier to build the static version of your app then adds interactivity later on.
+    - Building a static version requires a lot of writing and not thinking. While adding interactivity requires a lot of thinking and not writing.
+    - To build the static version of your appp that renders your data model, you'll want to build components that reuse other components and pass data using props.
+    - Props are the way of passing the data from parent component to child component.
+    - Never use the state to build the static version of your app.
+    - State is reserved only for interactivity i.e. data changes over time.
+    - You can either go top-downor bottom-up approach.
+    - Small projects- top down
+    - Large projects - bottom up
+    - One way data flow which means data is flowing from top level component.
+  3. **Find the minimal but complete representation of UI state**
+    - To make the UI interactive, you need to change the underlying data model. And for that you will be using the useState.
+    - Think of state as the minimal set of changing data that your apps needs to remember.
+    - The most important thing while defining the state is DRY. i.e. Don't repeat yourself.
+    - Figure out the absolute minimal representation of state that your application is needs and compute everything else on demand.
+    - If your building shopping list then you can have a state as array of shopping list but let suppose you also want the list of items then instead of creating another state of list of items use the length method.
+    - Which of them are states and identify the ones that are not :
+      1. Does it remain unchanges overtime? It is not a state.
+      2. Is it passed in from a parent via props ? It is not state.
+      3. Can you compute it based on some existing state and props then it is not a state.
+    **Props vs State**
+      - There aer two types of model data in React: props and state. The two are very different.
+      - Props are like argument you pass to a function. They let parent component pass the data to its child component.
+      - State is like component's memory. It lets a comoppnent keep track of some information and change it in response to interactions.
+      - Parent component will keep some information in state and pass it as props to child components.
+  4. **Identify where your state should live**
+    - After identifying your app's minimal state, you need to identify which component is responsible for for changing this state. Remember : React uses one way data flow, passing data down the component hierarchy from parent to child component.
+    - It may not be immediately clear which state belongs to which component.
+    - For each piece of state in your application : 
+      1. Identify every component that renders something based on that state.
+      2. Find their closest common parent component - a component above them all in the hierarchy.
+      3. Decide where the state should live :
+        1. Often, you can put the state directly into their common parent.
+        2. You can also put the state into some component above their common parent.
+        3. If you can't find a component where it makes sense to own the state, create a new component solelt for holding the state and add it somewhere in the hierarachy above the parent component.
+      - We can add the state to the react component using the hook useState.
+  5. **Add Inverse Data Flow**
+    - Two way binding, means adding the value and onChange attribute together so that is works well together and keeps on updating the UI as well on the basis of value changed.
+
+#### Installation
+##### Creating React app
+- If you want to build a new app or website with React, we recommend starting with a framework.
+- If your app is well not served by the existing framework, you prefer to build your own framework or you can build the React app from scratch.
+**Full-stack Frameworks**
+- These recommended frameworks support all the features you need to deploy and scale your app in production.
+**Full stack Frameworks do require a server**
+- All the framework below support the CSR client side scriptiing, single page application SPA, and static site generation SSG. These apps can be deployed to a CDN or static hoisting service without a server.
+- Additionally, these frameworks allows you to add server side rendring on a per-route basis, when it makes sense for your use case.
+- This allows you to start with client only app. If your needs change later then you can opt-in to using server features on individual routes without re-writing your app.
+1. **Next.js (App Router)**
+ -  Next.js's App router is a React framework that takes full advantage of React's Architecture to enable full-stack React apps.
+ ```bash
+npx create-next-app@latest
+ ```
+ - Next.js is maintained by Vercel. You can deploy a Next.js app to any Node.js or serverless hosting, or to your own server. Next.js also supports static export which doesn't require server. Vercel additionally provides opt-in paid cloud services.
+
+2. **React Router**
+- React router is a most popular routing library for React and can be paired with Vite to create a full stack React Framework.
+- It emphasizes standard Web APIs and has several ready to deploy templates for various Javascript runtimes and platforms.
+- To create a new react router framework project
+```bash
+npx create-react-router@latest
+```
+- React router is maintained by Shopify
+
+3. **Expo (for native apps)**
+- Expo is a react framework that is used for creating the universal Android , IOS and web apps with truly native UIs.
+- It provides a SDK for React Native that makes the native parts easier to use, 
+- To create the new Expo project :
+```bash
+npx create-expo-app@latest
+```
+- Expo is maintained by the company Expo, Building Expo app is free and you can submit them to Google and Apple stores without restrictions. Expo additionally provides opt-in paid cloud services.
+- There are other frameworks as well 
+  1. Tanstack Start (Beta)
+    - Fullstack react framework powered by tanstack router.
+    2. It provides  a full document ssr, streaming, server functions , bundling and more using tools like Nitro and Vite.
+
+  2. Redwood JS
+  - React full stack framework with pre installed packages.
+  - Pre configuration that makes easy to b build full stack web application.
+##### **Which features make up the React team's full stack architecture vision ?**
+-  Next/js's App Router bundler fully implement the official Rect Server components specification.
+- This lets you mix build time, server-only and interactive components in a single React tree.
+- For example you can create server-only component as an async function that reads from a database or from a file.
+- Then you can pass data down from it to your interactive components.
+```jsx
+// This component runs only on the server (or during the build)
+async function Talks({confiId}){
+  // 1. You are on the server, so you can talk to the data layer. API endpoint not required.
+  const talks = await db.Talks.findAll({confiId});
+  // 2. Add any amount of rendering logic. It won't make your javascript bundle larger.
+  const videos=talks.map(talk=>talk.video);
+  // 3. Pass the data down to the components that will run in the browser.
+  return <SearchableVideList videos={videos} / >
+}
+```
+- Next.js also integrates data fetching with Suspense. This lets you specify a loading state (like a skeleton placeholder) for different parts of user interface directly in your react tree.
+```jsx
+<Suspense fallback={<TaskLoading/>}>
+<Talks confId={confId}>/>
+</Suspense>
+```
+- Server components and Suspense are react features rather than Next.js features.
+##### **Start From Scratch for React App**
+- If your app has constraints not well served by existing frameworks, you prefer your own framework, or you want to just learn basic of react app, there are options of starting or creating the react from scratch.
+- Starting from scratch gives you more flexibility, but does require that you make choices on which tools to use for routing , data fetching and other common usage patterns.
+- It is more like building your own framework rather than using the existing ones.
+##### **Consider using a Framework**
+- Starting from scratch is easy way of getting started with react.
+- It is similar to building your own framework.
+- It may happen that existing frameworks had already solved simple problems but you still have to solve them as you are not using the framework.
+- In the future it may happen you need to have the server side rendering , static site genration, react server components. You will have to implement all of this on your own.
+- You have to integrate to frameworks on your own.
+- Existing frameworks elimate the network waterfall.
+- Data fetching, routing and other features are also developed on your own.
+1. **Install a build tool**
+- The first step is to install a build tool like vite, parcel or rsbuild.
+- These build tools provide features to package and run source code.
+- Provide a deveopment server for local development
+- build command to deploy your app to a production server.
+**Vite**
+- Vite is a build tool that aims to provide a faster and leaner development experience for modern web projects.
+```bash
+npm create vite@latest my-app -- --template react
+```
+- Vite is opinionated and comes with sensible defaults out of the box. Vite has  rich ecosystems plugins to suppor fast refresh , JSX, BABEL/SWC and other common features.
+- Vite is already been used as a build tool in one of our recommended frameworks react router.
+**Parcel**
+- Parcel combines a great out-of-the-box development experience with a scalable architecture that can take your project from just getting started to a massive application.
+```bash
+npm install --save-dev parcel
+```
+- Parcel supports fast referesh , JSX , TypeScript , FLow and styling out of the box. 
+2. **Build Common Application Patterns**
+- The build tool listed start off with client only, single page application, but don't include common functionality like routing , data fetching or styling.
+- The React ecosystem includes many tools for these problems. 
+**Routing**
+- Routing decides what content or pages to display when a user visits a particular url.
+- You need to setup a router to map URLs to different parts of your map.
+- You will also need to handle the nested routes, routes paramters and query parameters.
+- Routes can be configured within your code, or defined based on your component folder and file structures.
+- Routes are core part of modern applicatons, and are usually integrated with the data fetching (including pre fetching data for a whole page for faster loading), code splitting (to minimize client bundle sizes) and page rendering approaches (to decide how each gets generated).
+- We suggest using 
+  1. React Router
+  2. Tanstack Router
+**Data Fetching**
+- Fetching data from server or other data sources is the most important thing in an application.
+- Doing this properly requires loading states, error states and caching the fetched data, which can be complex.
+- Purpose-built data fetching libraries do the hard work of fetching and caching the data for you. letting you focus on what data your app needs and how to display it.
+- These libraries are typically used directly in your components, but can also be integrated into routing loaders for faster pre-fetching and better performance and in server rendering as well.
+- Note that fetching data directly in components can lead to slower loading times due to network request waterfalls, so we recommend prefetching router loaders or on the server as much as possible.
+- This allows a page's data to be fetched all at once as the page is being displayed.
+- If you are fetching data from most backends or REST-style APIs, we suggest using:
+1. React Query
+2. SWR
+3. RTK Query
+- If you are fetching data from GraphQL API, we suggest using
+1. Apollo
+2. Relay
+##### **Code Spitting**
+- Code spitting is the process of breaking your app into smaller bundles that can be loaded on demand.
+- An app's code size increases with every new feature and additional new dependency.
+- Apps can become slow to load because all of the code for entire app needs to be sent before it is used 
+
 ## React with TypeScript
 ## Tailwind CSS
 ## Prisma + PostgreSQl
