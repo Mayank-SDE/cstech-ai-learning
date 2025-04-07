@@ -391,7 +391,33 @@ function calculateWinner(squares) {
 - On the basis of key React descided which component is to be updated.
 - Keys no need to be globally unique but they must be unique among the siblings components.
 
-
+### Thinking in React
+- You will aways break your application into small pieces called as components.
+- Then you define different visual states for each of your components.
+- Finally you connect all of your components together so that data flows through them.
+```json 
+[
+  { category: "Fruits", price: "$1", stocked: true, name: "Apple" },
+  { category: "Fruits", price: "$1", stocked: true, name: "Dragonfruit" },
+  { category: "Fruits", price: "$2", stocked: false, name: "Passionfruit" },
+  { category: "Vegetables", price: "$2", stocked: true, name: "Spinach" },
+  { category: "Vegetables", price: "$4", stocked: false, name: "Pumpkin" },
+  { category: "Vegetables", price: "$1", stocked: true, name: "Peas" }
+]
+```
+- To implement the UI in React, you will always follow these following steps :
+  1. **Break the UI into a component hierrachy**
+    - Start by drawing boxes around each component and sub-component in the mockup and naming them.
+    - Usually, designer already name these component in their design tools.
+    - Depending upon the background, you can think of breakng the design into components in three different ways :
+      1. **Programming** 
+        - Use the same technique for deciding if you should create a new function or object.
+        - One such function is single responsibility principle.
+        - The above principle states that the component should do only one thing.
+      2. **CSS**
+        - Consider what you make class selector for.
+        - React components are bit less granular.
+      3. 
 ## React with TypeScript
 ## Tailwind CSS
 ## Prisma + PostgreSQl
