@@ -695,7 +695,20 @@ npm install --save-dev parcel
 ##### **Code Spitting**
 - Code spitting is the process of breaking your app into smaller bundles that can be loaded on demand.
 - An app's code size increases with every new feature and additional new dependency.
-- Apps can become slow to load because all of the code for entire app needs to be sent before it is used 
+- Apps can become slow to load because all of the code for entire app needs to be sent before it is used.
+- Caching, reducing features/ dependencies and moving some code to run on the server can help mitigate slow loading but are incomplete solutions that can sacrifice functionality if overused.
+- Similarly, if you rely on the apps using your framework to split the code, you might encounter situations where loading becomes slower than if no code splitting were happening at all.
+- For example, lazily loading a chart delays sending the code needed to render the chart,  splitting the chart code from the rest of the app.
+- Parcel supports code splitting with React.lazy.
+- However, if the chart loads it data after it has been initially rendered you are now waiting twice.
+- This is a waterfall: reather than fetching the data for the chart and sending the code to render it simultaneously, you must wait for each step to complete one after another.
+- Splitting code by route when integrated with bundling and data fetching, can reduce the initial load time of your app and the time it takes for the largest visible content of your app to render (Largest contentful paint).
+##### Improving application Performance
+- Since the build tool you select only support single page apps (SPAs) you will need to implement other rendering patterns like server side rendering (SSR), static site generation SSG, React server components RSC.
+  1. **SPA Single page application**
+    - It loads a single HTML page and dynamically update the HTML page as per the user interacts with the app.
+    - SPAs are easier to get started with, but they can have the slower initial load times. SPAs are the default architecture for most of the build tools.
+    
 
 ## React with TypeScript
 ## Tailwind CSS
