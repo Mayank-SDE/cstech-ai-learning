@@ -874,3 +874,11 @@ npm install --save-dev parcel
 ---
 
 This roadmap ensures you have the essential knowledge and hands-on practice to build **MapNest - Smart Property Explorer** successfully. 🚀
+
+
+#### Notes
+```bash
+# This command is used for printing the folder structure
+tree /F /A
+
+```

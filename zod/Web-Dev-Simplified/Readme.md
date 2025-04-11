@@ -219,3 +219,168 @@ const App = () => {
 
 export default App
 ```
+- Using disrciminatedUnion
+```tsx
+import {z} from 'zod';
+const App = () => {
+    const UserSchema=z.object({
+      id:z.discriminatedUnion("status",[
+        z.object({status:z.literal("success"),data:z.string()}),
+        z.object({status:z.literal("failed"),error:z.instanceof(Error)})
+      ])
+    }).strict();
+    // discriminatedUnion is in the case when you hav one field common and rest are different fields 
+    // it takes two arguments one is the name of the field
+    // second is the array of objects where each object is having one common field 
+    type User=z.infer<typeof UserSchema>;
+    const user:User={
+      id:{
+        status:"success",
+        data:"Mayank"
+      }
+    }
+  console.log(UserSchema.safeParse(user).success);
+  return (
+    <div>                                       
+      App
+    </div>
+
+  )
+}
+
+export default App
+```
+- Usng z.record() method nstead of z.object()
+- - z.record() are best when the key types are not known in advance and they are dynamically generated
+- If the keys are known and fixed we would be using the z.object() instead
+```tsx
+import { z } from "zod";
+
+const userScores = z.record(z.number());
+
+const result = userScores.parse({
+  alice: 10,
+  bob: 20,
+}); // ✅ Passes
+
+```
+```tsx
+const keyEnum = z.enum(["admin", "user", "guest"]);
+const permissions = z.record(keyEnum, z.boolean());
+
+const result = permissions.parse({
+  admin: true,
+  user: false,
+  guest: true,
+}); // ✅ Passes
+
+```
+```tsx
+userScores.parse({
+  alice: "high", // ❌ Error: expected number
+});
+
+```
+
+```tsx
+import {z} from 'zod';
+const App = () => {
+   // If you are passing only one parameter then it will be considered as type of value only
+   // if we pass two parameters then the first parameter is the type of key and second parameter is type of value.
+  const UserMap=z.record(z.string());  
+  const user={
+      gfsjsk:"bsdjkfhkjshdf"
+    }
+    console.log(UserMap.safeParse(user))
+  return (
+    <div>                                       
+      App
+    </div>
+
+  )
+}
+
+export default App
+```
+- But when there is a case when you want to store the set keys and set values so instead of using the record() we can also use the map method
+```tsx
+import {z} from 'zod';
+const App = () => {
+ // We can also use the map method if we have the set keys and set values type
+
+  const UserMap=z.map(z.string(),z.object({username:z.string()}));  
+  const user=new Map([["key1",{username:"username1"}],
+    ["key2",{username:"username2"}]])
+    console.log(UserMap.safeParse(user))
+  return (
+    <div>                                       
+      App
+    </div>
+
+  )
+}
+
+export default App
+```
+- We can also have the set which is an array where elements are unique.
+```tsx
+import {z} from 'zod';
+const App = () => {
+ 
+  const UserSet=z.set(z.number());  
+  const user=new Set([1,2,3,4,5]);
+   console.log(UserSet.safeParse(user))
+  return (
+    <div>                                       
+      App
+    </div>
+
+  )
+}
+
+export default App
+```
+- we can also have the promise where we can tell what is the return type of promise it is going to be.
+```tsx
+import {z} from 'zod';
+const App = () => {
+ 
+  const PromiseSchema=z.promise(z.string());
+  const promise=Promise.resolve("nvkjsngkjb");
+  console.log(PromiseSchema.parse(promise));
+  return (
+    <div>                                       
+      App
+    </div>
+
+  )
+}
+
+export default App
+```
+- We can also have the refine method for adding our own custom validation
+- We can pass the function as an first parameter where based on our custom validation and conditional logic our function will return true or false and the second parameter is the object having message property where the message will be displayed if the first parameter function will return false.
+```tsx
+import {z} from 'zod';
+const App = () => {
+ 
+      const brandEmail=z.string().email().refine(val=>{
+        return val.endsWith("mayankcstech.ai")
+      },{
+        message:"Email must end with mayankcstech.ai"
+      })
+      const email="Mayank@mayankcstech.ai";
+      console.log(brandEmail.parse(email));
+  return (
+    <div>                                       
+      App
+    </div>
+
+  )
+}
+
+export default App
+``` 
+- There is also superRefine method used for really low level validation
+- Where you want to perform complex validation
+- We can also use the zod-validation-error package for having simple error message instead of giant error object.
