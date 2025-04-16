@@ -1,10 +1,29 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import {useForm,SubmitHandler} from 'react-hook-form';
-type FormFields={
+import {z} from 'zod';
+const schema=z.object({
+  email:z.string().min(8).email(),
+  password:z.string().min(8)
+})
+// It is been inferred directly from the schema itself.
+type FormFields=z.infer<typeof schema>;
+/*{
   email:string;
   password:string;
-}
+}*/
+
 const App = () => {
-  const {register,handleSubmit,setError, formState:{errors,isSubmitting}}=useForm<FormFields>();
+  const {register,handleSubmit,setError, formState:{errors,isSubmitting}}=useForm<FormFields>({
+    defaultValues:{
+      email:"m@m.com"
+    },
+    // zodResolver is been imported from @hookform/resolvers/zod
+    // Which must be installed in your project
+    // npm i @hookform/resolvers
+    // This connect your react-hook-form with the schema using the zodResolver
+    resolver:zodResolver(schema)
+  });
+  // We can also have initial values set to the forma nd which can be expanded later.
   // Now, whenever we are changing values in the react-hook-form it is going to send the values to react hook form
   const onSubmit:SubmitHandler<FormFields>=async (data)=>{
     try {
@@ -27,7 +46,7 @@ const App = () => {
       {/* But in case any of the field is not getting validated then we can show the error message below the field using the error object */}
       {/* We also get the formState object which contains the errors object which contains the error message for each field. */}
       <input {...register("email",{
-        required:true,
+        required:"Email is required",
         pattern:{
           value:/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
           message:"Invalid email address"
@@ -44,7 +63,7 @@ const App = () => {
       {errors.email && errors.email.type==="validate" && <span className="text-red-500">{errors.email.message}</span>}
       {/* The errors object contains the error message for each field */}
       <input {...register("password",{
-        required:true,
+        required:"Password is required",
         minLength:{
           value:8,
           message:"Password must have atleast 8 characters"
@@ -52,6 +71,7 @@ const App = () => {
       })}  type="password" placeholder="Password"/>
       {errors.password && errors.password.type==="required" && <span className='text-red-500'>Password is required</span>}
       {errors.password && errors.password.type==="minLength" && <span className='text-red-500'>Min length required is 8</span>}
+      {errors.root &&  <span className='text-red-500'>{errors.root.message}</span>}
       <button disabled={isSubmitting} type="submit">{isSubmitting?"Loading":"Submit"}</button>
       
     </form>
